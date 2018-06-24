@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>无标题文档</title>
+    <link href="{:config('admin_static')}/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="{:config('admin_static')}/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{:config('admin_static')}/js/jquery.js"></script>
+    <script type="text/javascript" src="/plugin/layer/layer.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $(".click").click(function() {
+            $(".tip").fadeIn(200);
+        });
+
+        $(".tiptop a").click(function() {
+            $(".tip").fadeOut(200);
+        });
+
+        $(".sure").click(function() {
+            $(".tip").fadeOut(100);
+        });
+
+        $(".cancel").click(function() {
+            $(".tip").fadeOut(100);
+        });
+
+    });
+    </script>
+</head>
+
+<body>
+    <div class="place">
+        <span>位置：</span>
+        <ul class="placeul">
+            <li><a href="#">首页</a></li>
+            <li><a href="#">数据表</a></li>
+            <li><a href="#">基本内容</a></li>
+        </ul>
+    </div>
+    <div class="rightinfo">
+
+        <table class="tablelist">
+            <thead>
+                <tr>
+                    <th>
+                        <input name="" type="checkbox" value="" id="checkAll" />
+                    </th>
+                    <th>编号</th>
+                    <th>商品名</th>
+                    <th>商品价格</th>
+                    <th>商品数量</th>
+                    <th>图片</th>
+                    <th>是否热卖</th>
+                    <th>是否上架</th>
+                    <th>是否新品</th>
+                    <th>是否推荐</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {volist name='lists' id='list'}
+                <tr>
+                    <td>
+                        <input name="" type="checkbox" value="" />
+                    </td>
+                    <td>{$list['goods_id']}</td>
+                    <td>{$list['goods_name']}</td>
+                    <td>{$list['goods_price']}</td>
+                    <td>{$list['goods_number']}</td>
+                    <td><img src="/upload/{:json_decode($list['goods_thumb'])[0]}" alt="暂无图片"></td>
+                    <td class="is_hot" goods_id="{$list['goods_id']}" is_hot="{$list['is_hot']}"><img width='30px'  src='/admin/images/{$list["is_hot"]==1?"success":"error";}.fw.png' ></td>
+                    <td class="is_sale" goods_id="{$list['goods_id']}" is_hot="{$list['is_sale']}"><img width='30px'  src='/admin/images/{$list["is_hot"]==1?"success":"error";}.fw.png' ></td>
+                    <td class="is_new" goods_id="{$list['goods_id']}" is_hot="{$list['is_new']}"><img width='30px'  src='/admin/images/{$list["is_hot"]==1?"success":"error";}.fw.png' ></td>
+                    <td class="is_best" goods_id="{$list['goods_id']}" is_hot="{$list['is_best']}"><img width='30px'  src='/admin/images/{$list["is_hot"]==1?"success":"error";}.fw.png' ></td>
+                    <td>
+                        <a href="javascript:;" goods_id="{$list['goods_id']}" class="showContent tablelink">查看商品详情</a>
+                        <a href="javascript:;" goods_id="{$list['goods_id']}" class="delCat tablelink">放入回收站</a>
+                    </td>
+                </tr>
+            {/volist}
+            </tbody>
+        </table>
+        <div class="pagination">
+
+        </div>
+        <div class="tip">
+            <div class="tiptop"><span>提示信息</span>
+                <a></a>
+            </div>
+            <div class="tipinfo">
+                <span><img src="{:config('admin_static')}/images/ticon.png" /></span>
+                <div class="tipright">
+                    <p>是否确认对信息的修改 ？</p>
+                    <cite>如果是请点击确定按钮 ，否则请点取消。</cite>
+                </div>
+            </div>
+            <div class="tipbtn">
+                <input name="" type="button" class="sure" value="确定" />&nbsp;
+                <input name="" type="button" class="cancel" value="取消" />
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $('.tablelist tbody tr:odd').addClass('odd');
+
+        $(".is_hot").click(function(){
+            var goods_id=$(this).attr('goods_id');
+            var is_hot=$(this).attr('is_hot');
+            var self=$(this);
+            var img=$('.is_hot >img');
+            $.get("{:url('admin/goods/is_hot')}",{"goods_id":goods_id,"is_hot":is_hot},function(json){
+                console.log(json);
+                self.attr('is_hot',json.is_hot);
+                if(json.is_hot==1){
+                    img.attr('src','/admin/images/success.fw.png');
+                }else{
+                    img.attr('src','/admin/images/error.fw.png');
+                }
+            },'json');
+        });
+        $(".is_sale").click(function(){
+            var goods_id=$(this).attr('goods_id');
+            var is_sale=$(this).attr('is_sale');
+            var self=$(this);
+            var img=$('.is_sale >img');
+            $.get("{:url('admin/goods/is_sale')}",{"goods_id":goods_id,"is_sale":is_sale},function(json){
+                console.log(json);
+                self.attr('is_sale',json.is_sale);
+                if(json.is_sale==1){
+                    img.attr('src','/admin/images/success.fw.png');
+                }else{
+                    img.attr('src','/admin/images/error.fw.png');
+                }
+            },'json');
+        });
+        $(".is_new").click(function(){
+            var goods_id=$(this).attr('goods_id');
+            var is_new=$(this).attr('is_new');
+            var self=$(this);
+            var img=$('.is_new >img');
+            $.get("{:url('admin/goods/is_new')}",{"goods_id":goods_id,"is_new":is_new},function(json){
+                console.log(json);
+                self.attr('is_new',json.is_new);
+                if(json.is_new==1){
+                    img.attr('src','/admin/images/success.fw.png');
+                }else{
+                    img.attr('src','/admin/images/error.fw.png');
+                }
+            },'json');
+        });
+        $(".is_best").click(function(){
+            var goods_id=$(this).attr('goods_id');
+            var is_best=$(this).attr('is_best');
+            var self=$(this);
+            var img=$('.is_best >img');
+            $.get("{:url('admin/goods/is_best')}",{"goods_id":goods_id,"is_best":is_best},function(json){
+                console.log(json);
+                self.attr('is_best',json.is_best);
+                if(json.is_best==1){
+                    img.attr('src','/admin/images/success.fw.png');
+                }else{
+                    img.attr('src','/admin/images/error.fw.png');
+                }
+            },'json');
+        });
+
+        $(".showContent").click(function(){
+            var goods_id=$(this).attr('goods_id');
+            $.get("{:url('admin/goods/ajaxGetContent')}",{"goods_id":goods_id},function(json){
+                // console.log(json);
+                layer.open({
+                    title:json.goods.goods_name,
+                    type:1,
+                    skin:'layui-layer-rim',
+                    area:['1000px','500px'],
+                    content:json.goods.goods_desc
+                });
+            },'json');
+        });
+
+        $('.delCat').click(function(){
+            if(confirm('确认删除?')==false){
+                return;
+            }
+            var _self=$(this);
+            var cat_id=$(this).attr('cat_id');
+            $.get('{:url("admin/category/ajaxdel")}',{'cat_id':cat_id},function(data){
+                if(data.code=='200'){
+                    _self.parent().parent().remove();
+                }else{
+                    alert(data.message);
+                }
+            },'json');
+        });
+    </script>
+</body>
+
+</html>
